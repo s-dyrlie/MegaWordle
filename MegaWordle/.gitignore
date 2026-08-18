@@ -22,3 +22,16 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+
+words_alpha.txt
+words_alpha_clean.txt
+words8.txt
+answers8.txt
+raw_words_snippet.txt
+google-10000-english-no-swears.txtwords_alpha.txt
+words_alpha_clean.txt
+words8.txt
+answers8.txt
+google-10000-english-no-swears.txt
+raw_words_snippet.txt
