@@ -8,3 +8,4 @@ function printResult(guess: string, answer: string) {
     console.log("you guessed: " + guess.toUpperCase());
     console.log("result: " + result.join(" | "));
 
+}
