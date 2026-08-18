@@ -1,7 +1,7 @@
 export type tileStatus = "green" | "yellow" | "gray";
 
-export const WORD_LENGTH = 8;
-export const MAX_ATTEMPTS = 6;
+export const word_length = 8;
+export const max_attempts = 6;
 
 export function evaluateGuess(guess: string, answer: string): tileStatus[] {
     const g = guess.toUpperCase().split("");
@@ -30,8 +30,55 @@ export function evaluateGuess(guess: string, answer: string): tileStatus[] {
                 result[i] = "yellow";
                 remaining[g[i]] -= 1; //use another one of that letter
             }
-
                 //if no match, the letter keeps it's value as "gray"
         }
     return result;
+}
+
+
+import {ANSWERS, VALID_GUESSES } from "./words";
+
+export type GameStatus = "playing" | "won" | "lost";
+
+export function getRandomAnswer(): string {
+    const index = Math.floor(Math.random() * ANSWERS.length);
+    return ANSWERS[index];
+}
+
+export function isValidGuess(word: string): boolean {
+    return word.length === word_length && VALID_GUESSES.has(word.toUpperCase());
+}
+
+export class Game {
+    readonly answer: string;
+    guesses: string[] = [];
+    statuses: tileStatus[][] = [];
+    status: GameStatus = "playing";
+
+    constructor(answer: string) {
+        this.answer = answer.toUpperCase();
+    }
+
+    submitGuess(guess: string): { ok: true } | { ok: false; reason: string } {
+            if (this.status !== "playing") {
+            return {ok: false, reason: "the game is finished"};
+        }
+
+        const upper = guess.toUpperCase();
+
+        if (!isValidGuess(upper)) return {ok: false, reason: "invalid guess"};
+
+        const result = evaluateGuess(upper, this.answer);
+
+        this.guesses.push(upper);
+        this.statuses.push(result);
+
+        if (upper === this.answer){ 
+            this.status = "won"
+        } else if (this.guesses.length >= max_attempts ) {
+            this.status = "lost"
+        }
+
+        return {ok: true};
+    }
 }
