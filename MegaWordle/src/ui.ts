@@ -125,6 +125,20 @@ function submitGuess() {
     }
 }
 
+window.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+        handleKey("ENTER");
+    } else if (event.key === "Backspace") {
+        handleKey("BACKSPACE");
+    } else {
+        const upper = event.key.toUpperCase();
+        
+        if (/^[A-Z]$/.test(upper)) {
+            handleKey(upper);
+        }
+    }
+});
+
 
 createBoard();
 createKeyboard();
