@@ -1,6 +1,7 @@
 import {Game, getRandomAnswer, max_attempts, word_length} from "./game"
 
 let game = new Game(getRandomAnswer());
+console.log("Answer: ", game.answer); // temporary
 let currentGuess = "";
 
 const board = document.querySelector("#board") as HTMLDivElement;
