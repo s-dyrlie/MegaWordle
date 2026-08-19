@@ -26,35 +26,37 @@ function createBoard() {
 
 
 function createKeyboard() {
-    const keys =["ENTER",..."ABCDEFGHIJKLMNOPQRSTUVWXYZ".split(""),"BACKSPACE"];
-
+    const rows = [
+        ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
+        ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
+        ["ENTER", "Z", "X", "C", "V", "B", "N", "M", "BACKSPACE"],
+    ];
     keyboard.innerHTML = "";
 
-    for (const key of keys) {
-        const button = document.createElement("button"); //make a button per letter
-        button.textContent = key;
-        button.classList.add("key"); //give buttons class 'key'
+  for (const row of rows) {
+    const rowElement = document.createElement("div"); //create a <div> per row for easier styling
+    rowElement.classList.add("keyboard-row");
 
-        button.addEventListener("click", () => {
-            handleKey(key);
-        });
-        keyboard.appendChild(button); // add button to keyboard
+    for (const key of row) {
+      const button = document.createElement("button");
+      button.textContent = key;
+      button.classList.add("key");
+
+      if (key === "ENTER" || key === "BACKSPACE") {
+        button.classList.add("wide"); //gives these keys a separate class for styling
+      }
+
+      button.addEventListener("click", () => {
+        handleKey(key);
+      });
+
+      rowElement.appendChild(button);
     }
 
-    window.addEventListener("keydown", (event) => {
-        if (event.key === "Enter") {
-            handleKey("ENTER");
-        } else if (event.key === "Backspace") {
-            handleKey("BACKSPACE");
-        } else {
-            const upper = event.key.toUpperCase();
-
-            if (/^[AZ]$/.test(upper)) {
-                handleKey(upper);
-            }
-        }
-    });
+    keyboard.appendChild(rowElement);
+  }
 }
+
 
 function updateBoard() {
     const tiles = document.querySelectorAll(".tile"); //fetch all tiles on the board
