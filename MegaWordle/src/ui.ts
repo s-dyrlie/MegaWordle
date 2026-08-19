@@ -87,7 +87,6 @@ function createKeyboard() {
   }
 }
 
-
 function updateBoard() {
     const tiles = document.querySelectorAll(".tile"); //fetch all tiles on the board
 
@@ -139,6 +138,10 @@ function handleKey(key: string) {
 
 function submitGuess() {
     const result = game.submitGuess(currentGuess);
+
+    if (result.ok === false) {
+        return;
+    }
 
     currentGuess = "";
     updateBoard();
