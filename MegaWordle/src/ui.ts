@@ -25,7 +25,6 @@ function createBoard() {
     }
 }
 
-
 function createKeyboard() {
     const rows = [
         ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
@@ -57,7 +56,6 @@ function createKeyboard() {
     keyboard.appendChild(rowElement);
   }
 }
-
 
 function updateBoard() {
     const tiles = document.querySelectorAll(".tile"); //fetch all tiles on the board
@@ -147,7 +145,6 @@ window.addEventListener("keydown", (event) => {
     }
 });
 
-
 const modalOverlay = document.querySelector("#modal-overlay") as HTMLDivElement;
 const modalTitle = document.querySelector("#modal-title") as HTMLHeadingElement;
 const modalText = document.querySelector("#modal-text") as HTMLParagraphElement;
@@ -163,7 +160,45 @@ function hideModal() {
     modalOverlay.classList.add("hidden");
 }
 
+function buildShareText(): string {
+  const result = game.status === "won"
+    ? `${game.guesses.length}/${max_attempts}`
+    : `X/${max_attempts}`;
+
+  const grid = game.statuses
+    .map((row) =>
+      row
+        .map((status) => {
+          if (status === "green") return "🟩";
+          if (status === "yellow") return "🟨";
+          return "⬛";
+        })
+        .join("") 
+    )
+    .join("\n"); 
+
+  return `MegaWordle 🎯\n${result}\n\n${grid}`;
+}
+
+const copyResultButton = document.querySelector("#copy-result") as HTMLButtonElement;
+
+copyResultButton.addEventListener("click", async () => {
+  const text = buildShareText();
+
+  try {
+    await navigator.clipboard.writeText(text);
+    copyResultButton.textContent = "Kopiert! ✓";
+
+    setTimeout(() => {
+      copyResultButton.textContent = "Kopier resultat";
+    }, 2000);
+  } catch (error) {
+    console.error("Kunne ikke kopiere:", error);
+  }
+});
+
 modalClose.addEventListener("click", hideModal);
 
 createBoard();
-createKeyboard();
+createKeyboard(); 
+
