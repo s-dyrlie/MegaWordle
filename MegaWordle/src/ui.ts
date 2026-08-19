@@ -15,7 +15,7 @@ function createBoard() {
         const rowElement = document.createElement("div");
         rowElement.classList.add("row");
 
-        for (let column = 0; column < max_attempts; column++) {
+        for (let column = 0; column < word_length; column++) {
             const tile = document.createElement("div")
             tile.classList.add("tile");
             rowElement.appendChild(tile);
@@ -26,20 +26,34 @@ function createBoard() {
 
 
 function createKeyboard() {
-    const letters ="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const keys =["ENTER",..."ABCDEFGHIJKLMNOPQRSTUVWXYZ".split(""),"BACKSPACE"];
 
     keyboard.innerHTML = "";
 
-    for (const letter of letters) {
-        const button = document.createElement("button") //make a button per letter
-        button.textContent = letter;
-        button.classList.add("key") //give buttons class 'key'
+    for (const key of keys) {
+        const button = document.createElement("button"); //make a button per letter
+        button.textContent = key;
+        button.classList.add("key"); //give buttons class 'key'
 
-        button.addEventListener("click" () => {
-            handleKey(letter);
+        button.addEventListener("click", () => {
+            handleKey(key);
         });
         keyboard.appendChild(button); // add button to keyboard
     }
+
+    window.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+            handleKey("ENTER");
+        } else if (event.key === "Backspace") {
+            handleKey("BACKSPACE");
+        } else {
+            const upper = event.key.toUpperCase();
+
+            if (/^[AZ]$/.test(upper)) {
+                handleKey(upper);
+            }
+        }
+    });
 }
 
 function updateBoard() {
@@ -59,10 +73,10 @@ function updateBoard() {
     const curRow = game.guesses.length; //finds active row
 
     for (let column = 0; column < word_length; column++) {
-            const tile  = tiles[row * word_length + column] as HTMLDivElement; //find tile on boeard
+            const tile  = tiles[curRow * word_length + column] as HTMLDivElement; //find tile on boeard
 
-            if (currentGuess[col]) {
-            tile.textContent = currentGuess[col];
+            if (currentGuess[column]) {
+            tile.textContent = currentGuess[column];
         } else {
             tile.textContent = "";
         }
@@ -70,11 +84,43 @@ function updateBoard() {
 }
 
 function handleKey(key: string) {
+    if (game.status !== "playing") return;
 
+    if (key === "ENTER") {
+        submitGuess();
+        return;
+    }
+
+    if (key === "BACKSPACE") {
+        currentGuess = currentGuess.slice(0, -1);
+        updateBoard();
+        return;
+    }
+
+    if (currentGuess.length < word_length) {
+        currentGuess += key;
+        updateBoard();
+    }
 }
 
 function submitGuess() {
+    const result = game.submitGuess(currentGuess);
 
+    if (result.ok === false) {
+        message.textContent = result.reason;
+        return;
+    }
+
+    currentGuess = "";
+    updateBoard();
+
+    if (game.status === "won") {
+        message.textContent = "You won!"
+    } else if (game.status === "lost") {
+        message.textContent = "You lost. The answer was ${game.answer}";
+    } else {
+        message.textContent = "";
+    }
 }
 
 
