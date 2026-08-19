@@ -1,4 +1,4 @@
-import {Game, getRandomAnswer, max_attempts, word_length} from "./game"
+import {Game, getRandomAnswer, max_attempts, word_length, type tileStatus} from "./game"
 import {ANSWERS} from "./words"
 
 
@@ -21,6 +21,23 @@ const board = document.querySelector("#board") as HTMLDivElement;
 const keyboard = document.querySelector("#keyboard") as HTMLDivElement;
 const message = document.querySelector("#message") as HTMLDivElement;
 
+
+function startNewGame() {
+  const newSeed = Math.floor(Math.random() * ANSWERS.length);
+
+  const url = new URL(window.location.href);
+  url.searchParams.set("seed", String(newSeed));
+  window.history.replaceState({}, "", url);
+
+  game = new Game(getAnswerForSeed(newSeed));
+  currentGuess = "";
+  createBoard(); 
+  createKeyboard(); 
+  hideModal();
+}
+
+const newGameButton = document.querySelector("#new-game") as HTMLButtonElement;
+newGameButton.addEventListener("click", startNewGame);
 
 function createBoard() {
     board.innerHTML = "";
@@ -71,6 +88,43 @@ function createKeyboard() {
   }
 }
 
+function updateKeyboardColors() {
+  const buttons = document.querySelectorAll(".key");
+
+  buttons.forEach((button) => {
+    const key = button.textContent;
+    if (!key) return;
+
+    let bestStatus: tileStatus | null = null;
+    
+    if (key === "ENTER" || key === "BACKSPACE") return;
+
+    for (let row = 0; row < game.guesses.length; row++) {
+      const guess = game.guesses[row];
+      const statuses = game.statuses[row];
+
+      for (let i = 0; i < guess.length; i++) {
+        if (guess[i] !== key) continue; 
+
+        const status = statuses[i];
+
+        if (status === "green") {
+          bestStatus = "green";
+        } else if (status === "yellow" && bestStatus !== "green") {
+          bestStatus = "yellow";
+        } else if (status === "gray" && bestStatus === null) {
+          bestStatus = "gray";
+        }
+      }
+    }
+
+    button.classList.remove("green", "yellow", "gray");
+    if (bestStatus) {
+      button.classList.add(bestStatus);
+    }
+  });
+}
+
 
 function updateBoard() {
     const tiles = document.querySelectorAll(".tile"); //fetch all tiles on the board
@@ -98,6 +152,7 @@ function updateBoard() {
             }
         }
     }
+    updateKeyboardColors();
 }
 
 function handleKey(key: string) {
@@ -122,11 +177,6 @@ function handleKey(key: string) {
 
 function submitGuess() {
     const result = game.submitGuess(currentGuess);
-
-    if (result.ok === false) {
-        message.textContent = result.reason;
-        return;
-    }
 
     currentGuess = "";
     updateBoard();
