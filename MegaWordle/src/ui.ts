@@ -87,6 +87,43 @@ function createKeyboard() {
   }
 }
 
+function updateKeyboardColors() {
+  const buttons = document.querySelectorAll(".key");
+
+  buttons.forEach((button) => {
+    const key = button.textContent;
+    if (!key) return;
+
+    if (key === "ENTER" || key === "BACKSPACE") return;
+
+    let bestStatus: tileStatus | null = null;
+
+    for (let row = 0; row < game.guesses.length; row++) {
+      const guess = game.guesses[row];
+      const statuses = game.statuses[row];
+
+      for (let i = 0; i < guess.length; i++) {
+        if (guess[i] !== key) continue;
+
+        const status = statuses[i];
+
+        if (status === "green") {
+          bestStatus = "green";
+        } else if (status === "yellow" && bestStatus !== "green") {
+          bestStatus = "yellow";
+        } else if (status === "gray" && bestStatus === null) {
+          bestStatus = "gray";
+        }
+      }
+    }
+
+    button.classList.remove("green", "yellow", "gray");
+    if (bestStatus) {
+      button.classList.add(bestStatus);
+    }
+  });
+}
+
 function updateBoard() {
     const tiles = document.querySelectorAll(".tile"); //fetch all tiles on the board
 
@@ -207,7 +244,7 @@ function buildShareText(): string {
     )
     .join("\n"); 
 
-  return `MegaWordle 🎯\n${result}\n\n${grid}`;
+  return `MegaWordle \n${result}\n\n${grid}`;
 }
 
 const copyResultButton = document.querySelector("#copy-result") as HTMLButtonElement;
