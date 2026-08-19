@@ -1,7 +1,20 @@
 import {Game, getRandomAnswer, max_attempts, word_length} from "./game"
+import {ANSWERS} from "./words"
 
-let game = new Game(getRandomAnswer());
-console.log("Answer: ", game.answer); // temporary
+
+const existingSeed = getSeedFromUrl();
+const seed = existingSeed ?? Math.floor(Math.random() * ANSWERS.length);
+
+if (existingSeed === null) {
+  const url = new URL(window.location.href);
+  url.searchParams.set("seed", String(seed));
+  window.history.replaceState({}, "", url);
+}
+
+let game = new Game(getAnswerForSeed(seed));
+
+
+console.log("Seed: ", seed, "Answer: ", game.answer); // temporary
 let currentGuess = "";
 
 const board = document.querySelector("#board") as HTMLDivElement;
@@ -164,6 +177,17 @@ function hideModal() {
 }
 
 modalClose.addEventListener("click", hideModal);
+
+function getSeedFromUrl(): number | null  {
+    const params = new URLSearchParams(window.location.search);
+    const seed = params.get("seed");
+
+    return seed ? Number(seed) : null;
+}
+
+function getAnswerForSeed(seed: number): string {
+  return ANSWERS[seed % ANSWERS.length];
+}
 
 createBoard();
 createKeyboard();
