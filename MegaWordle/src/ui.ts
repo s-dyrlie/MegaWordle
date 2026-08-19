@@ -1,4 +1,4 @@
-import {Game, getRandomAnswer, max_attempts, word_length, type tileStatus} from "./game"
+import {Game, getRandomAnswer, max_attempts, word_length} from "./game"
 
 let game = new Game(getRandomAnswer());
 let currentGuess = "";
@@ -71,16 +71,17 @@ function updateBoard() {
             tile.classList.add(statuses[column]); //adds tile to correct colour class
         }
     }
+    if (game.status === "playing" && game.guesses.length < max_attempts) {
+        const curRow = game.guesses.length; //finds active row
 
-    const curRow = game.guesses.length; //finds active row
+        for (let column = 0; column < word_length; column++) {
+                const tile  = tiles[curRow * word_length + column] as HTMLDivElement; //find tile on boeard
 
-    for (let column = 0; column < word_length; column++) {
-            const tile  = tiles[curRow * word_length + column] as HTMLDivElement; //find tile on boeard
-
-            if (currentGuess[column]) {
-            tile.textContent = currentGuess[column];
-        } else {
-            tile.textContent = "";
+                if (currentGuess[column]) {
+                tile.textContent = currentGuess[column];
+            } else {
+                tile.textContent = "";
+            }
         }
     }
 }
@@ -117,9 +118,15 @@ function submitGuess() {
     updateBoard();
 
     if (game.status === "won") {
-        message.textContent = "You won!"
+        showModal(
+            "You won!",
+            `You solved it in ${game.guesses.length} attempts`
+        );
     } else if (game.status === "lost") {
-        message.textContent = "You lost. The answer was ${game.answer}";
+        showModal(
+            "You lost!",
+            `The answer was ${game.answer}`
+        );
     } else {
         message.textContent = "";
     }
@@ -139,6 +146,23 @@ window.addEventListener("keydown", (event) => {
     }
 });
 
+
+const modalOverlay = document.querySelector("#modal-overlay") as HTMLDivElement;
+const modalTitle = document.querySelector("#modal-title") as HTMLHeadingElement;
+const modalText = document.querySelector("#modal-text") as HTMLParagraphElement;
+const modalClose = document.querySelector("#modal-close") as HTMLButtonElement;
+
+function showModal(title: string, text: string) {
+    modalTitle.textContent = title;
+    modalText.textContent = text;
+    modalOverlay.classList.remove("hidden"); //make modal visible
+}
+
+function hideModal() {
+    modalOverlay.classList.add("hidden");
+}
+
+modalClose.addEventListener("click", hideModal);
 
 createBoard();
 createKeyboard();

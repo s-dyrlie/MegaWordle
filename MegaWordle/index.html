@@ -9,8 +9,17 @@
   <body>
     <div id="app">
       <h1 id="title">Mega Wordle</h1>
+      <div id="message"></div>
       <div id="board"></div>
       <div id="keyboard"></div>
+
+      <div id="modal-overlay" class="hidden">
+        <div id="modal">
+          <h2 id="modal-title"></h2>
+          <p id="modal-text"></p>
+          <button id="modal-close">Lukk</button>
+        </div>
+      </div>
     </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
