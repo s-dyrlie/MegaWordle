@@ -1,13 +1,43 @@
-import {Game, getRandomAnswer, max_attempts, word_length} from "./game"
+import {Game, getRandomAnswer, max_attempts, word_length, type tileStatus} from "./game"
+import {ANSWERS} from "./words"
 
-let game = new Game(getRandomAnswer());
-console.log("Answer: ", game.answer); // temporary
+
+const existingSeed = getSeedFromUrl();
+const seed = existingSeed ?? Math.floor(Math.random() * ANSWERS.length);
+
+if (existingSeed === null) {
+  const url = new URL(window.location.href);
+  url.searchParams.set("seed", String(seed));
+  window.history.replaceState({}, "", url);
+}
+
+let game = new Game(getAnswerForSeed(seed));
+
+
+console.log("Seed: ", seed, "Answer: ", game.answer); // temporary
 let currentGuess = "";
 
 const board = document.querySelector("#board") as HTMLDivElement;
 const keyboard = document.querySelector("#keyboard") as HTMLDivElement;
 const message = document.querySelector("#message") as HTMLDivElement;
 
+
+function startNewGame() {
+  const newSeed = Math.floor(Math.random() * ANSWERS.length);
+
+  const url = new URL(window.location.href);
+  url.searchParams.set("seed", String(newSeed));
+  window.history.replaceState({}, "", url);
+
+  game = new Game(getAnswerForSeed(newSeed));
+  currentGuess = "";
+  createBoard(); 
+  createKeyboard(); 
+  hideModal();
+}
+
+const newGameButton = document.querySelector("#new-game") as HTMLButtonElement;
+newGameButton.addEventListener("click", startNewGame);
 
 function createBoard() {
     board.innerHTML = "";
@@ -57,6 +87,7 @@ function createKeyboard() {
   }
 }
 
+
 function updateBoard() {
     const tiles = document.querySelectorAll(".tile"); //fetch all tiles on the board
 
@@ -83,6 +114,7 @@ function updateBoard() {
             }
         }
     }
+    updateKeyboardColors();
 }
 
 function handleKey(key: string) {
@@ -107,11 +139,6 @@ function handleKey(key: string) {
 
 function submitGuess() {
     const result = game.submitGuess(currentGuess);
-
-    if (result.ok === false) {
-        message.textContent = result.reason;
-        return;
-    }
 
     currentGuess = "";
     updateBoard();
@@ -199,6 +226,16 @@ copyResultButton.addEventListener("click", async () => {
 
 modalClose.addEventListener("click", hideModal);
 
-createBoard();
-createKeyboard(); 
+function getSeedFromUrl(): number | null  {
+    const params = new URLSearchParams(window.location.search);
+    const seed = params.get("seed");
 
+    return seed ? Number(seed) : null;
+}
+
+function getAnswerForSeed(seed: number): string {
+  return ANSWERS[seed % ANSWERS.length];
+}
+
+createBoard();
+createKeyboard();

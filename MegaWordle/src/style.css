@@ -61,6 +61,21 @@ body {
   font-size: large;
 }
 
+.key.green {
+  background: #538d4e;
+  color: white;
+}
+
+.key.yellow {
+  background: #b59f3b;
+  color: white;
+}
+
+.key.gray {
+  background: #3a3a3c;
+  color: #a0a0a0;
+}
+
 .key:hover {
   background: #bbc1c6; 
 }
