@@ -1,4 +1,4 @@
-import {Game, getRandomAnswer, max_attempts, word_length, type tileStatus} from "./game"
+import {Game, max_attempts, word_length, type tileStatus} from "./game"
 import {ANSWERS} from "./words"
 
 
@@ -216,10 +216,12 @@ const modalOverlay = document.querySelector("#modal-overlay") as HTMLDivElement;
 const modalTitle = document.querySelector("#modal-title") as HTMLHeadingElement;
 const modalText = document.querySelector("#modal-text") as HTMLParagraphElement;
 const modalClose = document.querySelector("#modal-close") as HTMLButtonElement;
+const resultGrid = document.querySelector("#result-grid") as HTMLDivElement;
 
 function showModal(title: string, text: string) {
     modalTitle.textContent = title;
     modalText.textContent = text;
+    resultGrid.textContent = buildShareText();
     modalOverlay.classList.remove("hidden"); //make modal visible
 }
 
@@ -254,13 +256,13 @@ copyResultButton.addEventListener("click", async () => {
 
   try {
     await navigator.clipboard.writeText(text);
-    copyResultButton.textContent = "Kopiert! ✓";
+    copyResultButton.textContent = "Copied";
 
     setTimeout(() => {
-      copyResultButton.textContent = "Kopier resultat";
+      copyResultButton.textContent = "Copy resultat";
     }, 2000);
   } catch (error) {
-    console.error("Kunne ikke kopiere:", error);
+    console.error("Could not copy:", error);
   }
 });
 

@@ -135,7 +135,7 @@ body {
   border-radius: 8px;
   padding: 30px;
   text-align: center;
-  width: 300px;
+  width: 400px;
 }
 
 #modal-title {
@@ -151,6 +151,13 @@ body {
   color: white;
   font-weight: bold;
   cursor: pointer;
+}
+
+#result-grid {
+  white-space: pre;
+  font-family: monospace;
+  margin: 15px 0;
+  line-height: 1.4;
 }
 
 #message {
