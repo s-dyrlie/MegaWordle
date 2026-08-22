@@ -69,7 +69,7 @@ function createKeyboard() {
 
     for (const key of row) {
       const button = document.createElement("button");
-      button.textContent = key;
+      button.textContent = key === "BACKSPACE" ? "⌫" : key;
       button.classList.add("key");
 
       if (key === "ENTER" || key === "BACKSPACE") {
