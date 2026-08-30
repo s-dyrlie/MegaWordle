@@ -177,7 +177,8 @@ function submitGuess() {
     const result = game.submitGuess(currentGuess);
 
     if (result.ok === false) {
-        return;
+      showTemporaryMessage(result.reason);
+      return;
     }
 
     currentGuess = "";
@@ -196,6 +197,16 @@ function submitGuess() {
     } else {
         message.textContent = "";
     }
+}
+
+function showTemporaryMessage(text: string) {
+  message.textContent = text;
+  message.classList.add("visible");
+
+  setTimeout(() => {
+    message.textContent = "";
+    message.classList.remove("visible");
+  }, 2000);
 }
 
 window.addEventListener("keydown", (event) => {

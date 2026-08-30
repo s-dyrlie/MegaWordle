@@ -200,10 +200,26 @@ body {
   color: white;
 }
 
+
 #message {
-  min-height: 24px;
-  margin-bottom: 10px;
+  position: fixed; 
+  top: 100px; 
+  left: 50%;
+  transform: translateX(-50%); 
+  background: #3a3a3c;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
   font-weight: bold;
+  font-size: 14px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 10; 
+}
+
+#message.visible {
+  opacity: 1;
 }
 
 #share-overlay {

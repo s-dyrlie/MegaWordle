@@ -59,14 +59,14 @@ export class Game {
         this.answer = answer.toUpperCase();
     }
 
-    submitGuess(guess: string): { ok: true } | { ok: false} {
+    submitGuess(guess: string): { ok: true } | { ok: false; reason: string} {
             if (this.status !== "playing") {
-            return {ok: false};
+            return {ok: false, reason: ""};
         }
 
         const upper = guess.toUpperCase();
 
-        if (!isValidGuess(upper)) return {ok: false};
+        if (!isValidGuess(upper)) return {ok: false, reason: "invalid guess"};
 
         const result = evaluateGuess(upper, this.answer);
 
