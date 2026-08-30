@@ -281,12 +281,12 @@ function getAnswerForSeed(seed: number): string {
 
 
 const shareOverlay = document.querySelector("#share-overlay") as HTMLDivElement;
-const shareClose = document.querySelector("#share-close") as HTMLButtonElement;
+const shareClose = document.querySelector("#share-close-btn") as HTMLButtonElement;
 const shareLinkInput = document.querySelector("#share-link") as HTMLInputElement;
-const copyLinkButton = document.querySelector("#copy-link") as HTMLButtonElement;
+const copyLinkButton = document.querySelector("#copy-link-btn") as HTMLButtonElement;
 const nativeShareButton = document.querySelector("#native-share") as HTMLButtonElement;
 const seedInput = document.querySelector("#seed-input") as HTMLInputElement;
-const playSeedButton = document.querySelector("#play-seed") as HTMLButtonElement;
+const playSeedButton = document.querySelector("#play-seed-btn") as HTMLButtonElement;
 const openShareButton = document.querySelector("#open-share") as HTMLButtonElement;
 
 function openShareModal() {
