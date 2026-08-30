@@ -279,5 +279,76 @@ function getAnswerForSeed(seed: number): string {
   return ANSWERS[seed % ANSWERS.length];
 }
 
+
+const shareOverlay = document.querySelector("#share-overlay") as HTMLDivElement;
+const shareClose = document.querySelector("#share-close") as HTMLButtonElement;
+const shareLinkInput = document.querySelector("#share-link") as HTMLInputElement;
+const copyLinkButton = document.querySelector("#copy-link") as HTMLButtonElement;
+const nativeShareButton = document.querySelector("#native-share") as HTMLButtonElement;
+const seedInput = document.querySelector("#seed-input") as HTMLInputElement;
+const playSeedButton = document.querySelector("#play-seed") as HTMLButtonElement;
+const openShareButton = document.querySelector("#open-share") as HTMLButtonElement;
+
+function openShareModal() {
+  shareLinkInput.value = window.location.href;
+  shareOverlay.classList.remove("hidden");
+
+  if ("share" in navigator) {
+    nativeShareButton.classList.remove("hidden")
+  } else {
+    nativeShareButton.classList.add("hidden")
+  }
+}
+
+function closeShareModal() {
+  shareOverlay.classList.add("hidden");
+}
+
+openShareButton.addEventListener("click", openShareModal);
+shareClose.addEventListener("click", closeShareModal);
+
+copyLinkButton.addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText(shareLinkInput.value);
+    copyLinkButton.textContent = "✓";
+    setTimeout(() => {
+      copyLinkButton.textContent = "📋";
+    }, 1500);
+  } catch (error) {
+    console.error("could not copy link:", error)
+  }
+});
+
+// check if native share is supported by browser
+nativeShareButton.addEventListener("click", async () => {
+  try {
+    await navigator.share({
+      title: "MegaWordle",
+      text: "Play a game against me",
+      url: shareLinkInput.value,
+    });
+  } catch (error) {
+    console.error("sharing stopped or failed: ", error);
+  }
+});
+
+playSeedButton.addEventListener("click", () => {
+  const enteredSeed = Number(seedInput.value);
+
+  if (seedInput.value.trim() === "" || Number.isNaN(enteredSeed)) {
+    seedInput.style.borderColor = "#d84c4c";
+    return;
+  }
+
+  const url = new URL(window.location.href);
+  url.searchParams.set("seed", String(enteredSeed));
+  window.location.href = url.toString();
+});
+
+
+
+
+
+
 createBoard();
 createKeyboard();

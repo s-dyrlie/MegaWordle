@@ -23,6 +23,32 @@
           <button id="modal-close">Close</button>
         </div>
       </div>
+      <div id="share-overlay" class="hidden">
+        <div id="share-modal">
+          <div id="share-header">
+            <h2>Share game</h2>
+            <button id="share-close-btn" aria-label="Close">x</button>
+          </div>
+          <p id="share-subtitle">Send the link to share a game</p>
+
+          <p id="share-label">Your link</p>
+          <div class="share-row">
+            <input type="text" id="share-link" readonly />
+            <button id="copy-link-btn" aria-label="Copy link">📋</button>
+          </div>
+
+          <button id="native-share" class="share-full-btn hidden">Share via</button>
+
+          <hr class="share-divider" />
+          <p class="share-label">Recieved a code?</p>
+          <div class="share-row">
+            <input type="text" id="seed-input" placeholder="Type in code />
+            <button id="play-seed">Play</button>
+          </div>
+        </div>
+      </div>
+
+      <button id="open-share">Share game</button>
     </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
